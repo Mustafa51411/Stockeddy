@@ -799,10 +799,11 @@
                 </div>
                 <div class="div-block-106">
                   <div class="div-block-108">
-                    <div class="text-block-34">Total :</div>
+                    <!-- Replace the --- in your total area with this: -->
+<div class="text-block-34">Total</div>
                   </div>
                   <div class="div-block-107">
-                    <div class="text-block-34">---</div>
+                    <div class="text-block-34" id="overall-total">---</div>
                   </div>
                 </div>
               </div>
@@ -902,34 +903,54 @@ document.addEventListener("DOMContentLoaded", function () {
     return row;
   }
 
-  function bindFields(form, index) {
-    const descInput = form.querySelector("#serviceDescription");
-    const qtyInput = form.querySelector("#quantity");
-    const priceInput = form.querySelector("#pricePerUnit");
+  // ...existing code...
 
-    const descPreview = document.getElementById(`preview-serviceDescription-${index}`);
-    const qtyPreview = document.getElementById(`preview-quantity-${index}`);
-    const pricePreview = document.getElementById(`preview-pricePerUnit-${index}`);
-    const totalPreview = document.getElementById(`preview-totalAmount-${index}`);
+function bindFields(form, index) {
+  const descInput = form.querySelector("#serviceDescription");
+  const qtyInput = form.querySelector("#quantity");
+  const priceInput = form.querySelector("#pricePerUnit");
 
-    function updateTotal() {
-      const qty = parseFloat(qtyInput.value) || 0;
-      const price = parseFloat(priceInput.value) || 0;
-      totalPreview.textContent = (qty * price).toFixed(2) + " EGP";
-    }
+  const descPreview = document.getElementById(`preview-serviceDescription-${index}`);
+  const qtyPreview = document.getElementById(`preview-quantity-${index}`);
+  const pricePreview = document.getElementById(`preview-pricePerUnit-${index}`);
+  const totalPreview = document.getElementById(`preview-totalAmount-${index}`);
 
-    descInput.addEventListener("input", () => {
-      descPreview.textContent = descInput.value || "---";
-    });
-    qtyInput.addEventListener("input", () => {
-      qtyPreview.textContent = qtyInput.value || "---";
-      updateTotal();
-    });
-    priceInput.addEventListener("input", () => {
-      pricePreview.textContent = priceInput.value || "---";
-      updateTotal();
-    });
+  function updateTotal() {
+    const qty = parseFloat(qtyInput.value) || 0;
+    const price = parseFloat(priceInput.value) || 0;
+    totalPreview.textContent = (qty * price).toFixed(2) + " EGP";
+    updateOverallTotal(); // Update overall total whenever a service total changes
   }
+
+  descInput.addEventListener("input", () => {
+    descPreview.textContent = descInput.value || "---";
+  });
+  qtyInput.addEventListener("input", () => {
+    qtyPreview.textContent = qtyInput.value || "---";
+    updateTotal();
+  });
+  priceInput.addEventListener("input", () => {
+    pricePreview.textContent = priceInput.value || "---";
+    updateTotal();
+  });
+}
+
+function updateOverallTotal() {
+  let total = 0;
+  // Select both the default and dynamic total fields
+  document.querySelectorAll('[id^="preview-totalAmount"]').forEach(el => {
+    // Extract the number before " EGP"
+    const value = parseFloat(el.textContent) || 0;
+    total += value;
+  });
+  const overallTotal = document.getElementById("overall-total");
+  if (overallTotal) {
+    overallTotal.textContent = total.toFixed(2) + " EGP";
+  }
+}
+
+// ...existing code...
+
 
   addBtn.addEventListener("click", function (e) {
     e.preventDefault();
@@ -953,6 +974,8 @@ document.addEventListener("DOMContentLoaded", function () {
   bindFields(serviceContainer.querySelector(".service-item"), 0);
 });
 </script>
+
+// ...existing code...
 </body>
 <!-- Mirrored from rfid-0e0b31.webflow.io/reports-module by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 20 Jul 2025 21:57:31 GMT -->
 
